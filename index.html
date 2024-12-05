@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheese Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #faf3d1; /* Нежно-желтый фон */
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #app {
+      width: 320px;
+      background-color: #fff7b2; /* Нежно-желтый блок */
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: auto;
+    }
+    #display {
+      background-color: #fff5d1; /* Светло-желтый дисплей */
+      border: 2px solid #e6c760;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      text-align: right;
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      height: 50px;
+      box-sizing: border-box;
+    }
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+    .button {
+      background-color: #ffd966; /* Желтый цвет кнопок */
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      color: #333;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .button:active {
+      background-color: #e6c760; /* Темнее при нажатии */
+    }
+    .button:nth-child(10) {
+      visibility: hidden; /* Пустая кнопка */
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="display" id="display">0</div>
+    <div class="button-container">
+      <button class="button">1</button>
+      <button class="button">2</button>
+      <button class="button">3</button>
+      <button class="button">4</button>
+      <button class="button">5</button>
+      <button class="button">6</button>
+      <button class="button">7</button>
+      <button class="button">8</button>
+      <button class="button">9</button>
+      <div></div> <!-- Пустая ячейка -->
+      <button class="button">0</button>
+      <button class="button" id="enter">Enter</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+    const buttons = document.querySelectorAll(".button");
+    const enterButton = document.getElementById("enter");
+
+    let input = "";
+
+    // Добавляем ввод цифр
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        if (button.textContent === "Enter") return;
+        input += button.textContent;
+        display.textContent = input;
+      });
+    });
+
+    // Алгоритм для генерации результатов
+    function cheeseGenerator(cheeseAmount) {
+      let result = "";
+      cheeseAmount /= 10;
+      while (cheeseAmount > 50) {
+        let x = Math.floor(Math.random() * 31) + 10;
+        result += `${x * 10}\n`;
+        cheeseAmount -= x;
+      }
+      result += `${Math.floor(cheeseAmount * 10)}`;
+      return result;
+    }
+
+    // Обработчик кнопки Enter
+    enterButton.addEventListener("click", () => {
+      const amount = parseInt(input);
+      if (isNaN(amount) || amount <= 0) {
+        display.textContent = "ERROR!";
+        return;
+      }
+      const result = cheeseGenerator(amount);
+      navigator.clipboard.writeText(result).then(() => {
+        display.textContent = "DONE!!!";
+      }).catch(() => {
+        display.textContent = "Clipboard Error";
+      });
+      input = ""; // Сброс ввода
+    });
+  </script>
+</body>
+</html>
